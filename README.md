@@ -59,13 +59,20 @@ You will need to install the following locally:
 2. Re-deploy the web app to publish changes
 
 ## Monthly Cost Analysis
-Complete a month cost analysis of each Azure resource to give an estimate total cost using the table below:
+A month cost analysis of each Azure resource:
 
-| Azure Resource | Service Tier | Monthly Cost |
+| Azure Resource | Service Tier | Monthly Cost $ |
 | ------------ | ------------ | ------------ |
-| *Azure Postgres Database* |     |              |
-| *Azure Service Bus*   |         |              |
-| ...                   |         |              |
+| *Azure Postgres Database* | Burstable, B1ms: 1 vCores, 2 GiB RAM, 128 GiB storage, P10 (500 IOPS); Geo-redundancy: Disabled | 27.13 |
+| *Azure Service Bus* | Basic: Max Message Size 256 KB - 1M OPS | 0.05 |
+| *Storage Account* | StorageV2 (general purpose v2) | ~0.50 |
+| *Azure Function App* | Free F1: 1 GB memory | 0.00|
+| *Azure Web App* | Free F1: 1 GB memory | 0.00 |
+| *Total* | | ~27.68 |
 
 ## Architecture Explanation
-This is a placeholder section where you can provide an explanation and reasoning for your architecture selection for both the Azure Web App and Azure Function.
+Reasons for choosing my architecture for both Azure Web App and Azure Functions.
+- Azure Postgres Database: I chose Postgres Database because it is suitable for storing relational data. Additionally, I selected the configuration 'Burstable, B1ms: 1 vCore, 2 GiB RAM, 128 GiB storage, P10 (500 IOPS); Geo-redundancy: Disabled' to save costs and fit the small scale of the problem.
+- Azure Service Bus: Because the Web app and Function app components are separate, I chose Azure Service Bus for communication between the components. When an user sends an email, a message is sent to a queue on Azure Service Bus, and then a function with the type Service Bus Trigger is triggered to then the email to the attendees in background. I also chose the 'Basic' tier with a small configuration, which is suitable for the scale of the problem.
+- Storage Account: This issue mostly does not require storing any asset files but only some secret data. Therefore, I chose the 'StorageV2 (general purpose v2)' plan to save costs.
+- Azure Web App & Azure Function App: For this problem, I believe the number of attendees is not large, so the computing demand is low. Therefore, I chose the 'F1' plan for both services. In the future, if there is a need to scale up, it will be very easy to do so.
