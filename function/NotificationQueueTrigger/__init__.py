@@ -47,10 +47,11 @@ def send_email(to_emails, subject, body):
     if to_emails is None or len(to_emails) == 0:
         return
 
+    # [cuongnh] I use Gmail to send emails instead of SendGrid. Currently, it is not possible to register a SendGrid account, some other students also encountered this issue.
     mail_server = 'smtp.gmail.com'
     port = 465
-    sender = 'cuongnhict@gmail.com'
-    password = 'rmly oxgm gwhr zuxs'
+    sender = os.getenv('SENDER_EMAIL')
+    password = os.getenv('SENDER_PWD')
 
     session = smtplib.SMTP_SSL(mail_server, port)
     count = 0
